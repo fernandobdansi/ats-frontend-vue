@@ -1,10 +1,10 @@
 <template>
-  <v-data-table :headers="headers" :items="clientes" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="marcas" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Cadastro de Clientes</v-toolbar-title>
+        <v-toolbar-title>Cadastro de Marcas</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="800px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
@@ -17,16 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.nome" label="Nome" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.cpf" label="CPF" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.telefone" label="Telefone" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.endereco" label="Endereço" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.Marca" label="Marca" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -57,13 +48,10 @@ export default {
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Nome", align: "start", value: "nome" },
-      { text: "CPF", value: "cpf" },
-      { text: "Telefone", value: "telefone" },
-      { text: "Endereço", value: "endereco" },
+      { text: "Marca", align: "start", value: "marca" },
       { text: "Ações", value: "actions", sortable: false }
     ],
-    clientes: [],
+    marcas: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -71,7 +59,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Cliente:" : "Editar Cliente:";
+      return this.editedIndex === -1 ? "Cadastrar Marca:" : "Editar Marca:";
     }
   },
 
@@ -87,36 +75,44 @@ export default {
 
   methods: {
     initialize() {
-      this.clientes = [
+      this.marcas = [
         {
           id: 1,
-          nome: "José da Silva",
-          cpf: "123.123.123-12",
-          telefone: "(28) 99953-3872",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: false
+          marca: "LG"
         },
         {
           id: 2,
-          nome: "Maria Gomes",
-          cpf: "123.123.123-13",
-          telefone: "(28) 99953-6345",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: true
+          marca: "Motorola"
+        },
+        {
+          id: 3,
+          marca: "Xiaomi"
+        },
+        {
+          id: 4,
+          marca: "Apple"
+        },
+        {
+          id: 5,
+          marca: "Samsung"
+        },
+        {
+          id: 6,
+          marca: "Nokia"
         }
       ];
     },
 
     editItem(item) {
-      this.editedIndex = this.clientes.indexOf(item);
+      this.editedIndex = this.marcas.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.clientes.indexOf(item);
+      const index = this.marcas.indexOf(item);
       confirm("Você tem certeza que deseja apagar este item?") &&
-        this.clientes.splice(index, 1);
+        this.marcas.splice(index, 1);
     },
 
     close() {
@@ -129,9 +125,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.clientes[this.editedIndex], this.editedItem);
+        Object.assign(this.marcas[this.editedIndex], this.editedItem);
       } else {
-        this.clientes.push(this.editedItem);
+        this.marcas.push(this.editedItem);
       }
       this.close();
     }

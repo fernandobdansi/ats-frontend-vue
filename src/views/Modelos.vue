@@ -1,8 +1,8 @@
 <template>
-  <v-data-table :headers="headers" :items="clientes" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="modelos" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Cadastro de Clientes</v-toolbar-title>
+        <v-toolbar-title>Cadastro de Modelos</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
@@ -16,17 +16,17 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.nome" label="Nome" outlined></v-text-field>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-select
+                      :items="marcas"
+                      item-text="marca"
+                      label="Marcas"
+                      v-model="editedItem.marca"
+                      outlined
+                    ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.cpf" label="CPF" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.telefone" label="Telefone" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.endereco" label="Endereço" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.modelo" label="Modelo" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -57,13 +57,12 @@ export default {
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Nome", align: "start", value: "nome" },
-      { text: "CPF", value: "cpf" },
-      { text: "Telefone", value: "telefone" },
-      { text: "Endereço", value: "endereco" },
+      { text: "Marca", align: "start", value: "marca" },
+      { text: "Modelo", align: "start", value: "modelo" },
       { text: "Ações", value: "actions", sortable: false }
     ],
-    clientes: [],
+    modelos: [],
+    marcas: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -71,7 +70,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Cliente:" : "Editar Cliente:";
+      return this.editedIndex === -1 ? "Cadastrar Modelo:" : "Editar Modelo:";
     }
   },
 
@@ -87,36 +86,76 @@ export default {
 
   methods: {
     initialize() {
-      this.clientes = [
+      (this.marcas = [
         {
           id: 1,
-          nome: "José da Silva",
-          cpf: "123.123.123-12",
-          telefone: "(28) 99953-3872",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: false
+          marca: "LG"
         },
         {
           id: 2,
-          nome: "Maria Gomes",
-          cpf: "123.123.123-13",
-          telefone: "(28) 99953-6345",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: true
+          marca: "Motorola"
+        },
+        {
+          id: 3,
+          marca: "Xiaomi"
+        },
+        {
+          id: 4,
+          marca: "Apple"
+        },
+        {
+          id: 5,
+          marca: "Samsung"
+        },
+        {
+          id: 6,
+          marca: "Nokia"
         }
-      ];
+      ]),
+        (this.modelos = [
+          {
+            id: 1,
+            marca: "LG",
+            modelo: "LG-K10"
+          },
+          {
+            id: 2,
+            marca: "Motorola",
+            modelo: "Moto G6"
+          },
+          {
+            id: 3,
+            marca: "Xiaomi",
+            modelo: "Note 8"
+          },
+          {
+            id: 4,
+            marca: "Apple",
+            modelo: "11 Max"
+          },
+          {
+            id: 5,
+            marca: "Samsung",
+            modelo: "S9 Plus"
+          },
+          {
+            id: 6,
+            marca: "Nokia",
+            modelo: "B360"
+          }
+        ]);
     },
 
     editItem(item) {
-      this.editedIndex = this.clientes.indexOf(item);
+      this.editedIndex = this.modelos.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.clientes.indexOf(item);
+      const index = this.modelos.indexOf(item);
       confirm("Você tem certeza que deseja apagar este item?") &&
-        this.clientes.splice(index, 1);
+        this.modelos.splice(index, 1);
     },
 
     close() {
@@ -129,9 +168,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.clientes[this.editedIndex], this.editedItem);
+        Object.assign(this.modelos[this.editedIndex], this.editedItem);
       } else {
-        this.clientes.push(this.editedItem);
+        this.modelos.push(this.editedItem);
       }
       this.close();
     }
