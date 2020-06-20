@@ -12,7 +12,7 @@
 
     <v-app-bar app clipped-left>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Application</v-toolbar-title>
+      <v-toolbar-title>ATS - Assistência Técnica Services</v-toolbar-title>
     </v-app-bar>
 
     <v-main>
@@ -26,7 +26,7 @@
     </v-main>
 
     <v-footer app>
-      <span>&copy; 2020</span>
+      <span>&copy; 2020 | ATS - Assistência Técnica Services</span>
     </v-footer>
   </v-app>
 </template>

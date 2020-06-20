@@ -2,12 +2,11 @@
   <v-data-table :headers="headers" :items="clientes" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Clientes</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-toolbar-title>Cadastro de Clientes</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">New Item</v-btn>
+            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -17,20 +16,17 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.name" label="Clientes name"></v-text-field>
+                  <v-col cols="12" sm="6" md="12">
+                    <v-text-field v-model="editedItem.nome" label="Nome" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field v-model="editedItem.cpf" label="CPF" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field v-model="editedItem.telefone" label="Telefone" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-checkbox v-model="editedItem.ativo" :label="`Checkbox`"></v-checkbox>
+                  <v-col cols="12" sm="6" md="12">
+                    <v-text-field v-model="editedItem.endereco" label="Endereço" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -38,8 +34,8 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+              <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
+              <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -50,7 +46,7 @@
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
+      <v-btn color="primary" @click="initialize">Resetar</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -119,7 +115,7 @@ export default {
 
     deleteItem(item) {
       const index = this.clientes.indexOf(item);
-      confirm("vc tem certeza que deseja apagar este item?") &&
+      confirm("Você tem certeza que deseja apagar este item?") &&
         this.clientes.splice(index, 1);
     },
 
