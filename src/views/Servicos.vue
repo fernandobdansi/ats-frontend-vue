@@ -1,10 +1,10 @@
 <template>
-  <v-data-table :headers="headers" :items="tecnicos" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="servicos" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Cadastro de Tecnicos</v-toolbar-title>
+        <v-toolbar-title>Cadastro de Serviços</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="800px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
@@ -17,22 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.nome" label="Nome" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.cpf" label="CPF" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.telefone" label="Telefone" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.endereco" label="Endereço" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.login" label="Login" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.senha" label="Senha" type="password" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.servico" label="Serviço" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -63,13 +48,10 @@ export default {
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Nome", align: "start", value: "nome" },
-      { text: "CPF", value: "cpf" },
-      { text: "Telefone", value: "telefone" },
-      { text: "Endereço", value: "endereco" },
+      { text: "Serviço", align: "start", value: "servico" },
       { text: "Ações", value: "actions", sortable: false }
     ],
-    tecnicos: [],
+    servicos: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -77,7 +59,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Tecnico:" : "Editar Tecnico:";
+      return this.editedIndex === -1 ? "Cadastrar Serviço:" : "Editar Serviço:";
     }
   },
 
@@ -93,40 +75,44 @@ export default {
 
   methods: {
     initialize() {
-      this.tecnicos = [
+      this.servicos = [
         {
           id: 1,
-          nome: "Pedro Alberto",
-          cpf: "123.123.123-12",
-          telefone: "(28) 99953-3872",
-          endereco: "Vargem Alta - ES - Brasil",
-          login: "josetec",
-          senha: "jose123",
-          ativo: false
+          servico: "Trocar Tela"
         },
         {
           id: 2,
-          nome: "Marcia Francisca",
-          cpf: "123.123.123-13",
-          telefone: "(28) 99953-6345",
-          endereco: "Vargem Alta - ES - Brasil",
-          login: "mariatec",
-          senha: "maria123",
-          ativo: true
+          servico: "Trocar Bateria"
+        },
+        {
+          id: 3,
+          servico: "Limpeza Geral"
+        },
+        {
+          id: 4,
+          servico: "Aplicar Pelicula"
+        },
+        {
+          id: 5,
+          servico: "Reparo no conector da Bateria"
+        },
+        {
+          id: 6,
+          servico: "Formatação do SO"
         }
       ];
     },
 
     editItem(item) {
-      this.editedIndex = this.tecnicos.indexOf(item);
+      this.editedIndex = this.servicos.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.tecnicos.indexOf(item);
+      const index = this.servicos.indexOf(item);
       confirm("Você tem certeza que deseja apagar este item?") &&
-        this.tecnicos.splice(index, 1);
+        this.servicos.splice(index, 1);
     },
 
     close() {
@@ -139,9 +125,9 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.tecnicos[this.editedIndex], this.editedItem);
+        Object.assign(this.servicos[this.editedIndex], this.editedItem);
       } else {
-        this.tecnicos.push(this.editedItem);
+        this.servicos.push(this.editedItem);
       }
       this.close();
     }

@@ -35,6 +35,32 @@ const routes = [
     name: 'Dispositivos',
     component: () => import(/* webpackChunkName: "dispositivos" */ '../views/Dispositivos.vue')
   },
+  {
+    path: '/statusgarantia',
+    name: 'Status Garantia',
+    component: () => import(/* webpackChunkName: "statusgarantia" */ '../views/StatusGarantia.vue')
+  },
+  {
+    path: '/statusordem',
+    name: 'Status Ordem De Serviço',
+    component: () => import(/* webpackChunkName: "statusordem" */ '../views/StatusOrdem.vue')
+  },
+  {
+    path: '/servicos',
+    name: 'Serviços',
+    component: () => import(/* webpackChunkName: "servico" */ '../views/Servicos.vue')
+  },
+  {
+    path: '/feedbacks',
+    name: 'FeedBacks',
+    component: () => import(/* webpackChunkName: "feedbacks" */ '../views/FeedBacks.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+  },
+
 
 ]
 
