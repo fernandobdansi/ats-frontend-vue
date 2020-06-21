@@ -2,9 +2,9 @@
   <v-data-table :headers="headers" :items="feedbacks" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Cadastro de feedbacks</v-toolbar-title>
+        <v-toolbar-title>Cadastro de FeedBacks</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
@@ -16,8 +16,20 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.feedback" label="feedback" outlined></v-text-field>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field v-model="editedItem.ordem" label="Ordem De Serviço" outlined></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-text-field v-model="editedItem.comentario" label="Comentário" outlined></v-text-field>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6">
+                    <v-select
+                      :items="satisfacaos"
+                      item-text="nome"
+                      label="Satisfação"
+                      v-model="editedItem.satisfacao"
+                      outlined
+                    ></v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -48,10 +60,12 @@ export default {
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "feedback", align: "start", value: "feedback" },
+      { text: "Ordem de Serviço", align: "start", value: "ordem" },
+      { text: "Satisfação", align: "start", value: "satisfacao" },
       { text: "Ações", value: "actions", sortable: false }
     ],
     feedbacks: [],
+    satisfacaos: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -59,7 +73,9 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar feedback:" : "Editar feedback:";
+      return this.editedIndex === -1
+        ? "Cadastrar FeedBack:"
+        : "Editar FeedBack:";
     }
   },
 
@@ -75,32 +91,60 @@ export default {
 
   methods: {
     initialize() {
-      this.feedbacks = [
+      (this.satisfacaos = [
         {
           id: 1,
-          feedback: "LG"
+          nome: "Ruim"
         },
         {
           id: 2,
-          feedback: "Motorola"
+          nome: "Bom"
         },
         {
           id: 3,
-          feedback: "Xiaomi"
+          nome: "Muito Bom"
         },
         {
           id: 4,
-          feedback: "Apple"
+          nome: "Ótimo"
         },
         {
           id: 5,
-          feedback: "Samsung"
-        },
-        {
-          id: 6,
-          feedback: "Nokia"
+          nome: "Exelente"
         }
-      ];
+      ]),
+        (this.feedbacks = [
+          {
+            id: 1,
+            ordem: "1234567",
+            comentario: "Ficou Muito Bom!",
+            satisfacao: "Muito Bom"
+          },
+          {
+            id: 2,
+            ordem: "456789",
+            comentario: "Parabens Muito Bom!",
+            satisfacao: "Ótimo"
+          },
+          {
+            id: 3,
+            ordem: "4567849",
+            comentario: "Ficou Muito Bom!",
+            satisfacao: "Exelente"
+          },
+          {
+            id: 4,
+            ordem: "456897",
+            comentario: "Top demais",
+            satisfacao: "Bom"
+          },
+          {
+            id: 5,
+            ordem: "225489",
+            comentario: "massa, muito top",
+            satisfacao: "Muito Bom"
+          }
+        ]);
     },
 
     editItem(item) {

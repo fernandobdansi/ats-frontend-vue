@@ -6,9 +6,34 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/ordensdeservico',
+    name: 'Ordens de Serviço',
+    component: () => import(/* webpackChunkName: "ordensdeservico" */ '../views/OrdensDeServico.vue')
+  },
+  {
+    path: '/orcamentos',
+    name: 'Orçamentos',
+    component: () => import(/* webpackChunkName: "orcamentos" */ '../views/Orcamentos.vue')
+  },
+  {
+    path: '/feedbacks',
+    name: 'FeedBacks',
+    component: () => import(/* webpackChunkName: "feedbacks" */ '../views/FeedBacks.vue')
+  },
+  {
+    path: '/garantias',
+    name: 'Garantias',
+    component: () => import(/* webpackChunkName: "garantias" */ '../views/Garantias.vue')
   },
   {
     path: '/clientes',
@@ -50,18 +75,6 @@ const routes = [
     name: 'Serviços',
     component: () => import(/* webpackChunkName: "servico" */ '../views/Servicos.vue')
   },
-  {
-    path: '/feedbacks',
-    name: 'FeedBacks',
-    component: () => import(/* webpackChunkName: "feedbacks" */ '../views/FeedBacks.vue')
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
-  },
-
-
 ]
 
 const router = new VueRouter({

@@ -91,7 +91,7 @@ export default {
         {
           id: 4,
           status: "Aguardando Aprovação"
-        },
+        }
       ];
     },
 
