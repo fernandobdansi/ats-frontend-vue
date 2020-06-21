@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <BemVindoComp msg="Welcome to Your Vue.js App" />
+    <BemVindoComp/>
   </div>
 </template>
 
