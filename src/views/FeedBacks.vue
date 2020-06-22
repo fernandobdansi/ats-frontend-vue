@@ -4,7 +4,7 @@
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de FeedBacks</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="800px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
@@ -16,13 +16,13 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="6">
+                  <v-col cols="12" sm="6" md="12">
                     <v-text-field v-model="editedItem.ordem" label="Ordem De Serviço" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="6">
+                  <v-col cols="12" sm="6" md="12">
                     <v-text-field v-model="editedItem.comentario" label="Comentário" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="6">
+                  <v-col cols="12" sm="6" md="12">
                     <v-select
                       :items="satisfacaos"
                       item-text="nome"

@@ -37,6 +37,9 @@
                   <v-col cols="12" sm="6" md="12">
                     <TabelaOrdemServicoItem />
                   </v-col>
+                  <v-col cols="12" sm="6" md="12">
+                    <v-text-field v-model="editedItem.descricao" label="Descrição" outlined></v-text-field>
+                  </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-select
                       :items="tecnicos"
@@ -45,9 +48,6 @@
                       v-model="editedItem.tecnico"
                       outlined
                     ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.descricao" label="Descrição" outlined></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field v-model="editedItem.valorTotal" label="Valor Total" outlined></v-text-field>
