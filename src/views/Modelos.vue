@@ -17,13 +17,13 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
-                    <v-select
+                    <v-combobox
                       :items="lMarca"
                       item-text="nomeMarca"
                       label="Marcas"
-                      v-model="editedItem.nomeMarca"
+                      v-model="editedItem.marca"
                       outlined
-                    ></v-select>
+                    ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field v-model="editedItem.nomeModelo" label="Modelo" outlined></v-text-field>
@@ -71,8 +71,8 @@ export default {
   data: () => ({
     dialog: false,
     headers: [
-      { text: "ID", value: "id" },
-      { text: "Nome", value: "nomeModelo" },
+      { text: "ID", value: "id"},
+      { text: "Nome", value: "nomeModelo"},
       { text: "Marca", value: "marca.nomeMarca" },
       { text: "Ações", align: "end", value: "actions", sortable: false }
     ],

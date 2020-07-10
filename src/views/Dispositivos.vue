@@ -17,31 +17,31 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
-                    <v-select
+                    <v-combobox
                       :items="marcas"
                       item-text="marca"
                       label="Marcas"
                       v-model="editedItem.marca"
                       outlined
-                    ></v-select>
+                    ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-select
+                    <v-combobox
                       :items="modelos"
                       item-text="modelo"
                       label="Modelo"
                       v-model="editedItem.modelo"
                       outlined
-                    ></v-select>
+                    ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="12">
-                    <v-select
+                    <v-combobox
                       :items="clientes"
                       item-text="nome"
                       label="Cliente"
                       v-model="editedItem.cliente"
                       outlined
-                    ></v-select>
+                    ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field v-model="editedItem.num_serie" label="Número de Série" outlined></v-text-field>
