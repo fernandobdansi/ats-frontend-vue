@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="tecnicos" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="ltecnico" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Tecnicos</v-toolbar-title>
@@ -58,7 +58,19 @@
 </template>
 
 <script>
+import TecnicoService from "../service/domain/TecnicoService";
+const service = TecnicoService.build();
+
+const textos = {
+  novo: "Novo Tecnico",
+  edicao: "Edição de Tecnico",
+  exclusao: "Deseja mesmo remover este Tecnico?"
+};
+
 export default {
+  name: "ltecnico",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
@@ -67,9 +79,9 @@ export default {
       { text: "CPF", value: "cpf" },
       { text: "Telefone", value: "telefone" },
       { text: "Endereço", value: "endereco" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    tecnicos: [],
+    ltecnico: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -77,7 +89,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Tecnico:" : "Editar Tecnico:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -88,45 +100,33 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.tecnicos = [
-        {
-          id: 1,
-          nome: "Pedro Alberto",
-          cpf: "123.123.123-12",
-          telefone: "(28) 99953-3872",
-          endereco: "Vargem Alta - ES - Brasil",
-          login: "josetec",
-          senha: "jose123",
-          ativo: false
-        },
-        {
-          id: 2,
-          nome: "Marcia Francisca",
-          cpf: "123.123.123-13",
-          telefone: "(28) 99953-6345",
-          endereco: "Vargem Alta - ES - Brasil",
-          login: "mariatec",
-          senha: "maria123",
-          ativo: true
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.ltecnico = response.rows;
+        return;
+      }
+      this.ltecnico = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.tecnicos.indexOf(item);
+      this.editedIndex = this.ltecnico.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.tecnicos.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.tecnicos.splice(index, 1);
+      const index = this.ltecnico.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.ltecnico.splice(index, 1));
+      }
     },
 
     close() {
@@ -139,9 +139,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.tecnicos[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.ltecnico[this.editedIndex], this.editedItem));
       } else {
-        this.tecnicos.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.ltecnico.push(response));
       }
       this.close();
     }

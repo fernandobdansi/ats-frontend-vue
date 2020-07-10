@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="status" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="stordem" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Status da Ordem de Serviço</v-toolbar-title>
@@ -17,7 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.status" label="Status" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.descricao" label="Status" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -43,15 +43,27 @@
 </template>
 
 <script>
+import StatusOrdemService from "../service/domain/StatusOrdemService";
+const service = StatusOrdemService.build();
+
+const textos = {
+  novo: "Novo Status de Ordem de Serviço",
+  edicao: "Edição de Status de Ordem de Serviço",
+  exclusao: "Deseja mesmo remover este Status de Ordem de Serviço?"
+};
+
 export default {
+  name: "stordem",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Status", align: "start", value: "status" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Descrição", value: "descricao" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    status: [],
+    stordem: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -59,7 +71,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Status:" : "Editar Status:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -70,41 +82,33 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.status = [
-        {
-          id: 1,
-          status: "Aguardando"
-        },
-        {
-          id: 2,
-          status: "Em Andamento"
-        },
-        {
-          id: 3,
-          status: "Finalizado"
-        },
-        {
-          id: 4,
-          status: "Aguardando Peças"
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.stordem = response.rows;
+        return;
+      }
+      this.stordem = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.status.indexOf(item);
+      this.editedIndex = this.stordem.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.status.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.status.splice(index, 1);
+      const index = this.stordem.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.stordem.splice(index, 1));
+      }
     },
 
     close() {
@@ -117,9 +121,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.status[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.stordem[this.editedIndex], this.editedItem));
       } else {
-        this.status.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.stordem.push(response));
       }
       this.close();
     }

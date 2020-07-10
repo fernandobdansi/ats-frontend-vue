@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="modelos" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lModelo" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Modelos</v-toolbar-title>
@@ -18,15 +18,15 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
                     <v-select
-                      :items="marcas"
-                      item-text="marca"
+                      :items="lMarca"
+                      item-text="nomeMarca"
                       label="Marcas"
-                      v-model="editedItem.marca"
+                      v-model="editedItem.nomeMarca"
                       outlined
                     ></v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.modelo" label="Modelo" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.nomeModelo" label="Modelo" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -52,17 +52,32 @@
 </template>
 
 <script>
+import ModeloService from "../service/domain/ModeloService";
+const service = ModeloService.build();
+
+import MarcaService from "../service/domain/MarcaService";
+const serviceMarca = MarcaService.build();
+
+const textos = {
+  novo: "Novo Modelo",
+  edicao: "Edição de Modelo",
+  exclusao: "Deseja mesmo remover este Modelo?"
+};
+
 export default {
+  name: "lModelo",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Marca", align: "start", value: "marca" },
-      { text: "Modelo", align: "start", value: "modelo" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Nome", value: "nomeModelo" },
+      { text: "Marca", value: "marca.nomeMarca" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    modelos: [],
-    marcas: [],
+    lModelo: [],
+    lMarca: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -70,7 +85,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Modelo:" : "Editar Modelo:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -81,81 +96,46 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
+    this.fetchRecordsMarca();
   },
 
   methods: {
-    initialize() {
-      (this.marcas = [
-        {
-          id: 1,
-          marca: "LG"
-        },
-        {
-          id: 2,
-          marca: "Motorola"
-        },
-        {
-          id: 3,
-          marca: "Xiaomi"
-        },
-        {
-          id: 4,
-          marca: "Apple"
-        },
-        {
-          id: 5,
-          marca: "Samsung"
-        },
-        {
-          id: 6,
-          marca: "Nokia"
-        }
-      ]),
-        (this.modelos = [
-          {
-            id: 1,
-            marca: "LG",
-            modelo: "LG-K10"
-          },
-          {
-            id: 2,
-            marca: "Motorola",
-            modelo: "Moto G6"
-          },
-          {
-            id: 3,
-            marca: "Xiaomi",
-            modelo: "Note 8"
-          },
-          {
-            id: 4,
-            marca: "Apple",
-            modelo: "11 Max"
-          },
-          {
-            id: 5,
-            marca: "Samsung",
-            modelo: "S9 Plus"
-          },
-          {
-            id: 6,
-            marca: "Nokia",
-            modelo: "B360"
-          }
-        ]);
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecordsMarca() {
+      serviceMarca.search({}).then(this.fetchRecodsSuccessMarca);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.lModelo = response.rows;
+        return;
+      }
+      this.lModelo = [];
+    },
+
+    fetchRecodsSuccessMarca(response) {
+      if (Array.isArray(response.rows)) {
+        this.lMarca = response.rows;
+        return;
+      }
+      this.lMarca = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.modelos.indexOf(item);
+      this.editedIndex = this.lModelo.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.modelos.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.modelos.splice(index, 1);
+      const index = this.lModelo.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.lModelo.splice(index, 1));
+      }
     },
 
     close() {
@@ -168,9 +148,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.modelos[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.lModelo[this.editedIndex], this.editedItem));
       } else {
-        this.modelos.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.lModelo.push(response));
       }
       this.close();
     }

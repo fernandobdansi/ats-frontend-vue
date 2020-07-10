@@ -1,8 +1,8 @@
 <template>
-  <v-data-table :headers="headers" :items="status" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="stgarantia" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Cadastro de Status da Garantia</v-toolbar-title>
+        <v-toolbar-title>Cadastro de Status de Garantia</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -17,7 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.status" label="Status" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.descricao" label="Status" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -43,15 +43,27 @@
 </template>
 
 <script>
+import StatusGarantiaService from "../service/domain/StatusGarantiaService";
+const service = StatusGarantiaService.build();
+
+const textos = {
+  novo: "Novo Status de Garantia",
+  edicao: "Edição de Status de Garantia",
+  exclusao: "Deseja mesmo remover este Status de Garantia?"
+};
+
 export default {
+  name: "stgarantia",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Status", align: "start", value: "status" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Descrição", value: "descricao" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    status: [],
+    stgarantia: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -59,7 +71,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Status:" : "Editar Status:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -70,41 +82,33 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.status = [
-        {
-          id: 1,
-          status: "Aguardando"
-        },
-        {
-          id: 2,
-          status: "Em Análise"
-        },
-        {
-          id: 3,
-          status: "Finalizado"
-        },
-        {
-          id: 4,
-          status: "Aguardando Aprovação"
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.stgarantia = response.rows;
+        return;
+      }
+      this.stgarantia = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.status.indexOf(item);
+      this.editedIndex = this.stgarantia.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.status.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.status.splice(index, 1);
+      const index = this.stgarantia.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.stgarantia.splice(index, 1));
+      }
     },
 
     close() {
@@ -117,9 +121,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.status[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.stgarantia[this.editedIndex], this.editedItem));
       } else {
-        this.status.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.stgarantia.push(response));
       }
       this.close();
     }

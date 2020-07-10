@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="servicos" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="servicos" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Serviços</v-toolbar-title>
@@ -17,7 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.servico" label="Serviço" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.descricao" label="Serviço" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -37,19 +37,31 @@
       <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
     </template>
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Resetar</v-btn>
+      <v-btn color="primary" @click="fetchRecords">Resetar</v-btn>
     </template>
   </v-data-table>
 </template>
 
 <script>
+import ServicoService from "../service/domain/ServicoService";
+const service = ServicoService.build();
+
+const textos = {
+  novo: "Novo Serviço",
+  edicao: "Edição de Serviço",
+  exclusao: "Deseja mesmo remover este Serviço?"
+};
+
 export default {
+  name: "Servicos",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Serviço", align: "start", value: "servico" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Descrição", value: "descricao" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
     servicos: [],
     editedIndex: -1,
@@ -59,7 +71,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Serviço:" : "Editar Serviço:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -70,37 +82,20 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.servicos = [
-        {
-          id: 1,
-          servico: "Trocar Tela"
-        },
-        {
-          id: 2,
-          servico: "Trocar Bateria"
-        },
-        {
-          id: 3,
-          servico: "Limpeza Geral"
-        },
-        {
-          id: 4,
-          servico: "Aplicar Pelicula"
-        },
-        {
-          id: 5,
-          servico: "Reparo no conector da Bateria"
-        },
-        {
-          id: 6,
-          servico: "Formatação do SO"
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.servicos = response.rows;
+        return;
+      }
+      this.servicos = [];
     },
 
     editItem(item) {
@@ -111,8 +106,9 @@ export default {
 
     deleteItem(item) {
       const index = this.servicos.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.servicos.splice(index, 1);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.servicos.splice(index, 1));
+      }
     },
 
     close() {
@@ -125,9 +121,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.servicos[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.servicos[this.editedIndex], this.editedItem));
       } else {
-        this.servicos.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.servicos.push(response));
       }
       this.close();
     }

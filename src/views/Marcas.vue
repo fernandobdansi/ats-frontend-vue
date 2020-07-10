@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="marcas" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lMarca" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Marcas</v-toolbar-title>
@@ -17,7 +17,7 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.Marca" label="Marca" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.nomeMarca" label="Marca" outlined></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -43,15 +43,27 @@
 </template>
 
 <script>
+import MarcaService from "../service/domain/MarcaService";
+const service = MarcaService.build();
+
+const textos = {
+  novo: "Nova Marca",
+  edicao: "Edição de Marca",
+  exclusao: "Deseja mesmo remover esta Marca?"
+};
+
 export default {
+  name: "lMarca",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Marca", align: "start", value: "marca" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Nome", value: "nomeMarca" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    marcas: [],
+    lMarca: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -59,7 +71,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Marca:" : "Editar Marca:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -70,49 +82,33 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.marcas = [
-        {
-          id: 1,
-          marca: "LG"
-        },
-        {
-          id: 2,
-          marca: "Motorola"
-        },
-        {
-          id: 3,
-          marca: "Xiaomi"
-        },
-        {
-          id: 4,
-          marca: "Apple"
-        },
-        {
-          id: 5,
-          marca: "Samsung"
-        },
-        {
-          id: 6,
-          marca: "Nokia"
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.lMarca = response.rows;
+        return;
+      }
+      this.lMarca = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.marcas.indexOf(item);
+      this.editedIndex = this.lMarca.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.marcas.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.marcas.splice(index, 1);
+      const index = this.lMarca.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.lMarca.splice(index, 1));
+      }
     },
 
     close() {
@@ -125,9 +121,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.marcas[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.lMarca[this.editedIndex], this.editedItem));
       } else {
-        this.marcas.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.lMarca.push(response));
       }
       this.close();
     }

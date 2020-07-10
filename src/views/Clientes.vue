@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="clientes" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lCliente" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Clientes</v-toolbar-title>
@@ -52,7 +52,19 @@
 </template>
 
 <script>
+import ClienteService from "../service/domain/ClienteService";
+const service = ClienteService.build();
+
+const textos = {
+  novo: "Novo Cliente",
+  edicao: "Edição de Cliente",
+  exclusao: "Deseja mesmo remover este Cliente?"
+};
+
 export default {
+  name: "lCliente",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
@@ -61,9 +73,9 @@ export default {
       { text: "CPF", value: "cpf" },
       { text: "Telefone", value: "telefone" },
       { text: "Endereço", value: "endereco" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    clientes: [],
+    lCliente: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -71,7 +83,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Cadastrar Cliente:" : "Editar Cliente:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -82,41 +94,33 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
   },
 
   methods: {
-    initialize() {
-      this.clientes = [
-        {
-          id: 1,
-          nome: "José da Silva",
-          cpf: "123.123.123-12",
-          telefone: "(28) 99953-3872",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: false
-        },
-        {
-          id: 2,
-          nome: "Maria Gomes",
-          cpf: "123.123.123-13",
-          telefone: "(28) 99953-6345",
-          endereco: "Vargem Alta - ES - Brasil",
-          ativo: true
-        }
-      ];
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.lCliente = response.rows;
+        return;
+      }
+      this.lCliente = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.clientes.indexOf(item);
+      this.editedIndex = this.lCliente.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.clientes.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.clientes.splice(index, 1);
+      const index = this.lCliente.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        service.destroy(item).then(this.lCliente.splice(index, 1));
+      }
     },
 
     close() {
@@ -129,9 +133,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.clientes[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(Object.assign(this.lCliente[this.editedIndex], this.editedItem));
       } else {
-        this.clientes.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then(response => this.lCliente.push(response));
       }
       this.close();
     }
