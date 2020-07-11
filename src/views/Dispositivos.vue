@@ -207,7 +207,7 @@ export default {
     },
 
     editItem(item) {
-      this.editedIndex = this.lModelo.indexOf(item);
+      this.editedIndex = this.lDispositivo.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.marcaSelecionada = null;
 
@@ -221,9 +221,9 @@ export default {
     },
 
     deleteItem(item) {
-      const index = this.lModelo.indexOf(item);
+      const index = this.lDispositivo.indexOf(item);
       if (confirm(textos.exclusao)) {
-        sDispositivo.destroy(item).then(this.lModelo.splice(index, 1));
+        sDispositivo.destroy(item).then(this.lDispositivo.splice(index, 1));
       }
     },
 
@@ -240,11 +240,11 @@ export default {
         console.log(this.editedItem);
         sDispositivo
           .update(this.editedItem)
-          .then(Object.assign(this.lModelo[this.editedIndex], this.editedItem));
+          .then(Object.assign(this.lDispositivo[this.editedIndex], this.editedItem));
       } else {
         sDispositivo
           .create(this.editedItem)
-          .then(response => this.lModelo.push(response));
+          .then(response => this.lDispositivo.push(response));
       }
       this.close();
     }
