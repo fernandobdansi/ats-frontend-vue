@@ -67,13 +67,13 @@ export default class Rest extends Api {
      * @returns {*|PromiseLike<T | never>|Promise<T | never>}
      */
     search(parameters = {}) {
-        const queryString = ''
-        console.log("parameters", parameters)
-        /** 
-         * TODO: Lógica da busca 
-         * 
-        */
-        return this.get(`?${queryString}`).then(response => ({
+        let queryString = ''
+
+        if (!(Object.keys(parameters).length === 0 && parameters.constructor === Object)) {
+            queryString = parameters;
+        }
+        
+        return this.get(`${queryString}`).then(response => ({
             rows: response
         }))
     }

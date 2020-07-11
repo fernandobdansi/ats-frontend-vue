@@ -19,9 +19,10 @@
                   <v-col cols="12" sm="6" md="6">
                     <v-combobox
                       :items="lMarca"
-                      item-text="marca.nomeMarca"
+                      item-text="nomeMarca"
                       label="Marcas"
-                      v-model="editedItem.modelo"
+                      v-model="marcaSelecionada"
+                      @change="buscarModelos"
                       outlined
                     ></v-combobox>
                   </v-col>
@@ -106,10 +107,14 @@ export default {
       { text: "Cliente", value: "cliente.nome" },
       { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
+
     lDispositivo: [],
     lCliente: [],
     lModelo: [],
     lMarca: [],
+
+    marcaSelecionada: null,
+
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -128,13 +133,16 @@ export default {
   },
 
   created() {
-    this.fetchRecordsDispositivo();
-    this.fetchRecordsMarca();
-    this.fetchRecordsModelo();
-    this.fetchRecordsCliente();
+    this.initialize();
   },
 
   methods: {
+    initialize() {
+      this.fetchRecordsDispositivo();
+      this.fetchRecordsMarca();
+      this.fetchRecordsCliente();
+    },
+
     fetchRecordsDispositivo() {
       sDispositivo.search({}).then(this.fetchRecodsSuccessDispositivo);
     },
@@ -143,8 +151,8 @@ export default {
       sMarca.search({}).then(this.fetchRecodsSuccessMarca);
     },
 
-    fetchRecordsModelo() {
-      sModelo.search({}).then(this.fetchRecodsSuccessModelo);
+    fetchRecordsModelo(query) {
+      sModelo.search(query).then(this.fetchRecodsSuccessModelo);
     },
 
     fetchRecordsCliente() {
@@ -183,9 +191,32 @@ export default {
       this.lCliente = [];
     },
 
+    buscarModelos() {
+      const query = this.getQueryUrlBuscaModelosPorMarca();
+      this.resetSelecaoModelo();
+      this.fetchRecordsModelo(query);
+    },
+
+    getQueryUrlBuscaModelosPorMarca() {
+      return `findByMarca/${this.marcaSelecionada.id}`;
+    },
+
+    resetSelecaoModelo() {
+      this.lModelo = [];
+      this.editedItem.modelo = null;
+    },
+
     editItem(item) {
       this.editedIndex = this.lModelo.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.marcaSelecionada = null;
+
+      Object.entries(this.editedItem).forEach(([key, value]) => {
+        if (key === "modelo") {
+          this.marcaSelecionada = value.marca;
+        }
+      });
+
       this.dialog = true;
     },
 
