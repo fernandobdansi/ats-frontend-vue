@@ -276,8 +276,8 @@ export default {
     },
 
     deleteItemComfirm() {
-      const index = this.lDispositivo.indexOf(this.editedItem);
-      sDispositivo.destroy(this.editedItem).then(this.lDispositivo.splice(index, 1));
+      //const index = this.lDispositivo.indexOf(this.editedItem);
+      sDispositivo.destroy(this.editedItem).then(this.lDispositivo.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 

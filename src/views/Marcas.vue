@@ -138,8 +138,8 @@ export default {
     },
 
     deleteItemComfirm() {
-      const index = this.lMarca.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.lMarca.splice(index, 1));
+      //const index = this.lMarca.indexOf(this.editedItem);
+      service.destroy(this.editedItem).then(this.lMarca.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 

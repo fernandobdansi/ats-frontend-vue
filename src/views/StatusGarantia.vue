@@ -138,8 +138,8 @@ export default {
     },
 
     deleteItemComfirm() {
-      const index = this.stgarantia.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.stgarantia.splice(index, 1));
+      //const index = this.servicos.indexOf(this.editedItem);
+      service.destroy(this.editedItem).then(this.stgarantia.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 

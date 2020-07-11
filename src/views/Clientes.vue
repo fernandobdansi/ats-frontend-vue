@@ -186,8 +186,8 @@ export default {
     },
 
     deleteItemComfirm() {
-      const index = this.lCliente.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.lCliente.splice(index, 1));
+      //const index = this.lCliente.indexOf(this.editedItem);
+      service.destroy(this.editedItem).then(this.lCliente.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 

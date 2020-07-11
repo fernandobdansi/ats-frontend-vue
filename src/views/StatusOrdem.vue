@@ -140,8 +140,8 @@ export default {
     },
 
     deleteItemComfirm() {
-      const index = this.stordem.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.stordem.splice(index, 1));
+      //const index = this.stordem.indexOf(this.editedItem);
+      service.destroy(this.editedItem).then(this.stordem.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
