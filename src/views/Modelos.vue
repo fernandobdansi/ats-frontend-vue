@@ -82,7 +82,7 @@ export default {
   data: () => ({
     dialog: false,
     valid: true,
-    modeloRulesMarca: [v => !!v || "Preenchimento Necessário"],
+    modeloRulesMarca: [v => !!v || "Seleção Necessária"],
     modeloRulesNome: [
       v => !!v || "Preenchimento Necessário",
       v =>

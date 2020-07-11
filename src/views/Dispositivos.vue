@@ -9,56 +9,78 @@
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
           <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-form ref="form" v-model="valid">
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-combobox
-                      :items="lMarca"
-                      item-text="nomeMarca"
-                      label="Marcas"
-                      v-model="marcaSelecionada"
-                      @change="buscarModelos"
-                      outlined
-                    ></v-combobox>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-combobox
-                      :items="lModelo"
-                      item-text="nomeModelo"
-                      label="Modelo"
-                      v-model="editedItem.modelo"
-                      outlined
-                    ></v-combobox>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-combobox
-                      :items="lCliente"
-                      item-text="nome"
-                      label="Cliente"
-                      v-model="editedItem.cliente"
-                      outlined
-                    ></v-combobox>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.numSerie" label="Número de Série" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.descricao" label="Descrição" outlined></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-combobox
+                        :items="lMarca"
+                        item-text="nomeMarca"
+                        label="Marcas"
+                        v-model="marcaSelecionada"
+                        @change="buscarModelos"
+                        outlined
+                        required
+                        :rules="dispositivoRulesMarcaModeloCliente"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-combobox
+                        :items="lModelo"
+                        item-text="nomeModelo"
+                        label="Modelo"
+                        v-model="editedItem.modelo"
+                        outlined
+                        required
+                        :rules="dispositivoRulesMarcaModeloCliente"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-combobox
+                        :items="lCliente"
+                        item-text="nome"
+                        label="Cliente"
+                        v-model="editedItem.cliente"
+                        outlined
+                        required
+                        :rules="dispositivoRulesMarcaModeloCliente"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        v-model="editedItem.numSerie"
+                        label="Número de Série"
+                        outlined
+                        required
+                        :counter="9"
+                        :rules="dispositivoRulesNumSerie"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        v-model="editedItem.descricao"
+                        label="Descrição"
+                        outlined
+                        required
+                        :counter="150"
+                        :rules="dispositivoRulesDescricao"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
-            </v-card-actions>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="blue darken-1" text @click="save">Salvar</v-btn>
+              </v-card-actions>
+            </v-form>
           </v-card>
         </v-dialog>
       </v-toolbar>
@@ -98,6 +120,20 @@ export default {
 
   data: () => ({
     dialog: false,
+    valid: true,
+    dispositivoRulesMarcaModeloCliente: [v => !!v || "Seleção Necessária"],
+    dispositivoRulesNumSerie: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 9 && v.length >= 5) ||
+        "O campo deve ter pelo menos 5 e no maximo 9 letras"
+    ],
+    dispositivoRulesDescricao: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 150 && v.length >= 5) ||
+        "O campo deve ter pelo menos 5 e no maximo 150 letras"
+    ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Nome", value: "modelo.nomeModelo" },
@@ -240,7 +276,9 @@ export default {
         console.log(this.editedItem);
         sDispositivo
           .update(this.editedItem)
-          .then(Object.assign(this.lDispositivo[this.editedIndex], this.editedItem));
+          .then(
+            Object.assign(this.lDispositivo[this.editedIndex], this.editedItem)
+          );
       } else {
         sDispositivo
           .create(this.editedItem)
