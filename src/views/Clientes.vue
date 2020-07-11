@@ -24,27 +24,27 @@
                         outlined
                         required
                         :counter="200"
-                        :rules="tecnicoRulesNomeEndereco"
+                        :rules="clienteRulesNomeEndereco"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field
+                        v-mask="{mask:'###.###.###-##'}"
                         v-model="editedItem.cpf"
                         label="CPF"
                         outlined
                         required
-                        :counter="11"
-                        :rules="tecnicoRulesCpf"
+                        :rules="clienteRulesCpf"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field
+                        v-mask="{mask:'(##) ####-####'}"
                         v-model="editedItem.telefone"
                         label="Telefone"
                         outlined
                         required
-                        :counter="13"
-                        :rules="tecnicoRulesTelefone"
+                        :rules="clienteRulesTelefone"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="12">
@@ -54,7 +54,7 @@
                         outlined
                         required
                         :counter="200"
-                        :rules="tecnicoRulesNomeEndereco"
+                        :rules="clienteRulesNomeEndereco"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -83,6 +83,8 @@
 
 <script>
 import ClienteService from "../service/domain/ClienteService";
+import { mask } from "@titou10/v-mask";
+
 const service = ClienteService.build();
 
 const textos = {
@@ -94,26 +96,26 @@ const textos = {
 export default {
   name: "lCliente",
   components: {},
+  directives: { mask },
 
   data: () => ({
     dialog: false,
     valid: true,
-    tecnicoRulesNomeEndereco: [
+    clienteRulesNomeEndereco: [
       v => !!v || "Preenchimento Necessário",
       v =>
         (v && v.length <= 200 && v.length >= 10) ||
         "O campo deve ter pelo menos 10 e no maximo 200 letras"
     ],
-    tecnicoRulesCpf: [
+    clienteRulesCpf: [
       v => !!v || "Preenchimento Necessário",
       v =>
-        (v && v.length <= 11 && v.length >= 11) || "O campo deve ter 11 digitos"
+        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 11 digitos"
     ],
-    tecnicoRulesTelefone: [
+    clienteRulesTelefone: [
       v => !!v || "Preenchimento Necessário",
       v =>
-        (v && v.length <= 13 && v.length >= 10) ||
-        "O campo deve ter pelo menos 10 e no maximo 13 letras"
+        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 10 digitos"
     ],
     headers: [
       { text: "ID", value: "id" },

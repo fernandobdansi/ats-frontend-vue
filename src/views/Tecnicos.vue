@@ -29,21 +29,21 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field
+                        v-mask="{mask:'###.###.###-##'}"
                         v-model="editedItem.cpf"
                         label="CPF"
                         outlined
                         required
-                        :counter="11"
                         :rules="tecnicoRulesCpf"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="6">
                       <v-text-field
+                        v-mask="{mask:'(##) ####-####'}"
                         v-model="editedItem.telefone"
                         label="Telefone"
                         outlined
                         required
-                        :counter="13"
                         :rules="tecnicoRulesTelefone"
                       ></v-text-field>
                     </v-col>
@@ -104,6 +104,8 @@
 
 <script>
 import TecnicoService from "../service/domain/TecnicoService";
+import { mask } from "@titou10/v-mask";
+
 const service = TecnicoService.build();
 
 const textos = {
@@ -115,6 +117,7 @@ const textos = {
 export default {
   name: "ltecnico",
   components: {},
+  directives: { mask },
 
   data: () => ({
     dialog: false,
@@ -128,13 +131,12 @@ export default {
     tecnicoRulesCpf: [
       v => !!v || "Preenchimento Necessário",
       v =>
-        (v && v.length <= 11 && v.length >= 11) || "O campo deve ter 11 digitos"
+        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 11 digitos"
     ],
     tecnicoRulesTelefone: [
       v => !!v || "Preenchimento Necessário",
       v =>
-        (v && v.length <= 13 && v.length >= 10) ||
-        "O campo deve ter pelo menos 10 e no maximo 13 letras"
+        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 10 digitos"
     ],
     tecnicoRulesLoginSenha: [
       v => !!v || "Preenchimento Necessário",
