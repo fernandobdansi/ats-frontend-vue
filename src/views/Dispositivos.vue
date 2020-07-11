@@ -183,6 +183,21 @@ export default {
       this.lCliente = [];
     },
 
+    buscarModelos() {
+      const query = this.getQueryUrlBuscaModelosPorMarca();
+      this.resetSelecaoModelo();
+      this.fetchRecordsModelo(query);
+    },
+
+    getQueryUrlBuscaModelosPorMarca() {
+      return `findByMarca/${this.marcaSelecionada.id}`;
+    },
+
+    resetSelecaoModelo() {
+      this.lModelo = [];
+      this.editedItem.modelo = null;
+    },
+
     editItem(item) {
       this.editedIndex = this.lModelo.indexOf(item);
       this.editedItem = Object.assign({}, item);
