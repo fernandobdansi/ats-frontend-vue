@@ -9,34 +9,64 @@
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
           <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-form ref="form" v-model="valid">
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.nome" label="Nome" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.cpf" label="CPF" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.telefone" label="Telefone" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.endereco" label="Endereço" outlined></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-text-field
+                        v-model="editedItem.nome"
+                        label="Nome"
+                        outlined
+                        required
+                        :counter="200"
+                        :rules="tecnicoRulesNomeEndereco"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        v-model="editedItem.cpf"
+                        label="CPF"
+                        outlined
+                        required
+                        :counter="11"
+                        :rules="tecnicoRulesCpf"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-text-field
+                        v-model="editedItem.telefone"
+                        label="Telefone"
+                        outlined
+                        required
+                        :counter="13"
+                        :rules="tecnicoRulesTelefone"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-text-field
+                        v-model="editedItem.endereco"
+                        label="Endereço"
+                        outlined
+                        required
+                        :counter="200"
+                        :rules="tecnicoRulesNomeEndereco"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
-            </v-card-actions>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="blue darken-1" text @click="save">Salvar</v-btn>
+              </v-card-actions>
+            </v-form>
           </v-card>
         </v-dialog>
       </v-toolbar>
@@ -67,6 +97,24 @@ export default {
 
   data: () => ({
     dialog: false,
+    valid: true,
+    tecnicoRulesNomeEndereco: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 200 && v.length >= 10) ||
+        "O campo deve ter pelo menos 10 e no maximo 200 letras"
+    ],
+    tecnicoRulesCpf: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 11 && v.length >= 11) || "O campo deve ter 11 digitos"
+    ],
+    tecnicoRulesTelefone: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 13 && v.length >= 10) ||
+        "O campo deve ter pelo menos 10 e no maximo 13 letras"
+    ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Nome", align: "start", value: "nome" },
@@ -136,7 +184,9 @@ export default {
         console.log(this.editedItem);
         service
           .update(this.editedItem)
-          .then(Object.assign(this.lCliente[this.editedIndex], this.editedItem));
+          .then(
+            Object.assign(this.lCliente[this.editedIndex], this.editedItem)
+          );
       } else {
         service
           .create(this.editedItem)

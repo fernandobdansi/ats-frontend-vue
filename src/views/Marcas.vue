@@ -9,25 +9,34 @@
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
           <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-form ref="form" v-model="valid">
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.nomeMarca" label="Marca" outlined></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-text-field
+                        v-model="editedItem.nomeMarca"
+                        label="Marca"
+                        outlined
+                        required
+                        :counter="100"
+                        :rules="marcaRules"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
-            </v-card-actions>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="blue darken-1" text @click="save">Salvar</v-btn>
+              </v-card-actions>
+            </v-form>
           </v-card>
         </v-dialog>
       </v-toolbar>
@@ -58,6 +67,13 @@ export default {
 
   data: () => ({
     dialog: false,
+    valid: true,
+    marcaRules: [
+      v => !!v || "Preenchimento Necessário",
+      v =>
+        (v && v.length <= 100 && v.length >= 2) ||
+        "O campo deve ter pelo menos 2 e no maximo 100 letras"
+    ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Nome", value: "nomeMarca" },

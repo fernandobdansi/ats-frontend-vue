@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="dispositivos" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lDispositivo" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Dispositivos</v-toolbar-title>
@@ -18,17 +18,17 @@
                 <v-row>
                   <v-col cols="12" sm="6" md="6">
                     <v-combobox
-                      :items="marcas"
-                      item-text="marca"
+                      :items="lMarca"
+                      item-text="marca.nomeMarca"
                       label="Marcas"
-                      v-model="editedItem.marca"
+                      v-model="editedItem.modelo"
                       outlined
                     ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-combobox
-                      :items="modelos"
-                      item-text="modelo"
+                      :items="lModelo"
+                      item-text="nomeModelo"
                       label="Modelo"
                       v-model="editedItem.modelo"
                       outlined
@@ -36,7 +36,7 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="12">
                     <v-combobox
-                      :items="clientes"
+                      :items="lCliente"
                       item-text="nome"
                       label="Cliente"
                       v-model="editedItem.cliente"
@@ -44,7 +44,7 @@
                     ></v-combobox>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.num_serie" label="Número de Série" outlined></v-text-field>
+                    <v-text-field v-model="editedItem.numSerie" label="Número de Série" outlined></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field v-model="editedItem.descricao" label="Descrição" outlined></v-text-field>
@@ -73,22 +73,43 @@
 </template>
 
 <script>
+import DispositivoService from "../service/domain/DispositivoService";
+const sDispositivo = DispositivoService.build();
+
+import ModeloService from "../service/domain/ModeloService";
+const sModelo = ModeloService.build();
+
+import MarcaService from "../service/domain/MarcaService";
+const sMarca = MarcaService.build();
+
+import ClienteService from "../service/domain/ClienteService";
+const sCliente = ClienteService.build();
+
+const textos = {
+  novo: "Novo Dispositivo",
+  edicao: "Edição de Dispositivo",
+  exclusao: "Deseja mesmo remover este Dispositivo?"
+};
+
 export default {
+  name: "lDispositivo",
+  components: {},
+
   data: () => ({
     dialog: false,
     headers: [
       { text: "ID", value: "id" },
-      { text: "Marca", align: "start", value: "marca" },
-      { text: "Modelo", value: "modelo" },
-      { text: "Num Série", value: "num_serie" },
+      { text: "Nome", value: "modelo.nomeModelo" },
+      { text: "Marca", value: "modelo.marca.nomeMarca" },
+      { text: "Num Serie", value: "numSerie" },
       { text: "Descrição", value: "descricao" },
-      { text: "Cliente", value: "cliente" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Cliente", value: "cliente.nome" },
+      { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
-    dispositivos: [],
-    modelos: [],
-    marcas: [],
-    clientes: [],
+    lDispositivo: [],
+    lCliente: [],
+    lModelo: [],
+    lMarca: [],
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
@@ -96,9 +117,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1
-        ? "Cadastrar Dispositivo:"
-        : "Editar Dispositivo:";
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
     }
   },
 
@@ -109,141 +128,72 @@ export default {
   },
 
   created() {
-    this.initialize();
+    this.fetchRecordsDispositivo();
+    this.fetchRecordsMarca();
+    this.fetchRecordsModelo();
+    this.fetchRecordsCliente();
   },
 
   methods: {
-    initialize() {
-      (this.dispositivos = [
-        {
-          id: 1,
-          marca: "LG",
-          modelo: "K-10",
-          num_serie: "123456",
-          descricao: "Azul",
-          cliente: "José da Silva"
-        },
-        {
-          id: 2,
-          marca: "Motorola",
-          modelo: "Moto G6",
-          num_serie: "456789",
-          descricao: "Verde",
-          cliente: "Francisco Roberto"
-        },
-        {
-          id: 3,
-          marca: "Nokia",
-          modelo: "B360",
-          num_serie: "77456789",
-          descricao: "Cinza",
-          cliente: "Roberto Miranda"
-        },
-        {
-          id: 4,
-          marca: "Apple",
-          modelo: "11 Max",
-          num_serie: "4561231",
-          descricao: "Branco",
-          cliente: "Maria Lucia"
-        }
-      ]),
-        (this.marcas = [
-          {
-            id: 1,
-            marca: "LG"
-          },
-          {
-            id: 2,
-            marca: "Motorola"
-          },
-          {
-            id: 3,
-            marca: "Xiaomi"
-          },
-          {
-            id: 4,
-            marca: "Apple"
-          },
-          {
-            id: 5,
-            marca: "Samsung"
-          },
-          {
-            id: 6,
-            marca: "Nokia"
-          }
-        ]),
-        (this.modelos = [
-          {
-            id: 1,
-            marca: "LG",
-            modelo: "LG-K10"
-          },
-          {
-            id: 2,
-            marca: "Motorola",
-            modelo: "Moto G6"
-          },
-          {
-            id: 3,
-            marca: "Xiaomi",
-            modelo: "Note 8"
-          },
-          {
-            id: 4,
-            marca: "Apple",
-            modelo: "11 Max"
-          },
-          {
-            id: 5,
-            marca: "Samsung",
-            modelo: "S9 Plus"
-          },
-          {
-            id: 6,
-            marca: "Nokia",
-            modelo: "B360"
-          }
-        ]),
-        (this.clientes = [
-          {
-            id: 1,
-            nome: "José da Silva"
-          },
-          {
-            id: 2,
-            nome: "Francisco Roberto"
-          },
-          {
-            id: 3,
-            nome: "Roberto Miranda"
-          },
-          {
-            id: 4,
-            nome: "Maria Lucia"
-          },
-          {
-            id: 5,
-            nome: "Ana Luzia"
-          },
-          {
-            id: 6,
-            nome: "Fernando Bueno"
-          }
-        ]);
+    fetchRecordsDispositivo() {
+      sDispositivo.search({}).then(this.fetchRecodsSuccessDispositivo);
+    },
+
+    fetchRecordsMarca() {
+      sMarca.search({}).then(this.fetchRecodsSuccessMarca);
+    },
+
+    fetchRecordsModelo() {
+      sModelo.search({}).then(this.fetchRecodsSuccessModelo);
+    },
+
+    fetchRecordsCliente() {
+      sCliente.search({}).then(this.fetchRecodsSuccessCliente);
+    },
+
+    fetchRecodsSuccessDispositivo(response) {
+      if (Array.isArray(response.rows)) {
+        this.lDispositivo = response.rows;
+        return;
+      }
+      this.lDispositivo = [];
+    },
+
+    fetchRecodsSuccessMarca(response) {
+      if (Array.isArray(response.rows)) {
+        this.lMarca = response.rows;
+        return;
+      }
+      this.lMarca = [];
+    },
+
+    fetchRecodsSuccessModelo(response) {
+      if (Array.isArray(response.rows)) {
+        this.lModelo = response.rows;
+        return;
+      }
+      this.lModelo = [];
+    },
+
+    fetchRecodsSuccessCliente(response) {
+      if (Array.isArray(response.rows)) {
+        this.lCliente = response.rows;
+        return;
+      }
+      this.lCliente = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.dispositivos.indexOf(item);
+      this.editedIndex = this.lModelo.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.dispositivos.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.dispositivos.splice(index, 1);
+      const index = this.lModelo.indexOf(item);
+      if (confirm(textos.exclusao)) {
+        sDispositivo.destroy(item).then(this.lModelo.splice(index, 1));
+      }
     },
 
     close() {
@@ -256,9 +206,14 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.dispositivos[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        sDispositivo
+          .update(this.editedItem)
+          .then(Object.assign(this.lModelo[this.editedIndex], this.editedItem));
       } else {
-        this.dispositivos.push(this.editedItem);
+        sDispositivo
+          .create(this.editedItem)
+          .then(response => this.lModelo.push(response));
       }
       this.close();
     }
