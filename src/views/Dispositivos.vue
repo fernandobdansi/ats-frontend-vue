@@ -133,13 +133,16 @@ export default {
   },
 
   created() {
-    this.fetchRecordsDispositivo();
-    this.fetchRecordsMarca();
-    this.fetchRecordsModelo();
-    this.fetchRecordsCliente();
+    this.initialize();
   },
 
   methods: {
+    initialize() {
+      this.fetchRecordsDispositivo();
+      this.fetchRecordsMarca();
+      this.fetchRecordsCliente();
+    },
+
     fetchRecordsDispositivo() {
       sDispositivo.search({}).then(this.fetchRecodsSuccessDispositivo);
     },
