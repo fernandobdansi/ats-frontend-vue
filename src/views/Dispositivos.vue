@@ -206,6 +206,14 @@ export default {
     editItem(item) {
       this.editedIndex = this.lModelo.indexOf(item);
       this.editedItem = Object.assign({}, item);
+      this.marcaSelecionada = null;
+
+      Object.entries(this.editedItem).forEach(([key, value]) => {
+        if (key === "modelo") {
+          this.marcaSelecionada = value.marca;
+        }
+      });
+
       this.dialog = true;
     },
 
