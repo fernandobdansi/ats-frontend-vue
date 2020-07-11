@@ -19,9 +19,10 @@
                   <v-col cols="12" sm="6" md="6">
                     <v-combobox
                       :items="lMarca"
-                      item-text="marca.nomeMarca"
+                      item-text="nomeMarca"
                       label="Marcas"
-                      v-model="editedItem.modelo"
+                      v-model="marcaSelecionada"
+                      @change="buscarModelos"
                       outlined
                     ></v-combobox>
                   </v-col>
@@ -106,10 +107,14 @@ export default {
       { text: "Cliente", value: "cliente.nome" },
       { text: "Ações", align: "end", value: "actions", sortable: false }
     ],
+
     lDispositivo: [],
     lCliente: [],
     lModelo: [],
     lMarca: [],
+
+    marcaSelecionada: null,
+
     editedIndex: -1,
     editedItem: {},
     defaultItem: {}
