@@ -148,8 +148,8 @@ export default {
       sMarca.search({}).then(this.fetchRecodsSuccessMarca);
     },
 
-    fetchRecordsModelo() {
-      sModelo.search({}).then(this.fetchRecodsSuccessModelo);
+    fetchRecordsModelo(query) {
+      sModelo.search(query).then(this.fetchRecodsSuccessModelo);
     },
 
     fetchRecordsCliente() {
