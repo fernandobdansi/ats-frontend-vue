@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const standard = axios.create({
-    baseURL: 'http://127.0.0.1:9000/',
+    baseURL: 'https://ats-backend-spring.herokuapp.com/',
     timeout: 100000,
     transformResponse: [
         function (data) {
