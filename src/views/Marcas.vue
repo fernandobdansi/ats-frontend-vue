@@ -22,7 +22,7 @@
                         label="Marca"
                         outlined
                         required
-                        :counter="100"
+                        :counter="20"
                         :rules="marcaRules"
                       ></v-text-field>
                     </v-col>
