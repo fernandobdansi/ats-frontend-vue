@@ -82,8 +82,8 @@ export default {
     marcaRules: [
       v => !!v || "Preenchimento Necessário",
       v =>
-        (v && v.length <= 100 && v.length >= 2) ||
-        "O campo deve ter pelo menos 2 e no maximo 100 letras"
+        (v && v.length <= 20 && v.length >= 2) ||
+        "O campo deve ter pelo menos 2 e no maximo 20 letras"
     ],
     headers: [
       { text: "ID", value: "id" },
