@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="lFeedback" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lFeedback" order-by="id" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de FeedBacks</v-toolbar-title>

@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="stgarantia" class="elevation-1">
+  <v-data-table :headers="headers" :items="stgarantia" order-by="id" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat v-model="valid">
         <v-toolbar-title>Cadastro de Status de Garantia</v-toolbar-title>

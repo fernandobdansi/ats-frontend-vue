@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="lMarca" class="elevation-1">
+  <v-data-table :headers="headers" :items="lMarca" order-by="id" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Marcas</v-toolbar-title>

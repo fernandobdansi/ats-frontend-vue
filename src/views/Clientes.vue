@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="lCliente" class="elevation-1">
+  <v-data-table :headers="headers" :items="lCliente" order-by="id" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Clientes</v-toolbar-title>
