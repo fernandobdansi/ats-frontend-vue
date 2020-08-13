@@ -21,7 +21,7 @@
                       <v-combobox
                         :items="lOrdem"
                         item-text="id"
-                        label="Ordems"
+                        label="Ordens"
                         v-model="editedItem.ordemDeServico"
                         outlined
                         required
