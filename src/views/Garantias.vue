@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="garantias" sort-by="calories" class="elevation-1">
+  <v-data-table :headers="headers" :items="lGarantia" sort-by="calories" class="elevation-1">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Cadastro de Garantias</v-toolbar-title>
@@ -9,90 +9,98 @@
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">Novo Item</v-btn>
           </template>
           <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+            <v-form ref="form" v-model="valid">
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-text-field
-                      v-model="editedItem.itemservico"
-                      label="Cod Item Serviço"
-                      outlined
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-select
-                      :items="status"
-                      item-text="nome"
-                      label="Status"
-                      v-model="editedItem.status"
-                      outlined
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="12">
-                    <v-text-field v-model="editedItem.motivo" label="Motivo" outlined></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-menu
-                      ref="menuEntrada"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.dataEntrada"
-                          label="Data de Entrada"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          outlined
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="editedItem.dataEntrada" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menuEntrada = false">Cancelar</v-btn>
-                        <v-btn text color="primary" @click="$refs.menuEntrada.save(dataEntrada)">OK</v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6">
-                    <v-menu
-                      ref="menuSaida"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.dataSaida"
-                          label="Data de Saida"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          outlined
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="editedItem.dataSaida" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menuSaida = false">Cancelar</v-btn>
-                        <v-btn text color="primary" @click="$refs.menuSaida.save(dataSaida)">OK</v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-combobox
+                        :items="lOrdem"
+                        item-text="id"
+                        label="Ordems"
+                        v-model="editedItem.ordemDeServico"
+                        outlined
+                        required
+                        :rules="modeloRulesOrdem"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-combobox
+                        :items="lStatus"
+                        item-text="descricao"
+                        label="Status"
+                        v-model="editedItem.statusGarantia"
+                        outlined
+                        required
+                        :rules="modeloRulesStatus"
+                      ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-text-field
+                        v-model="editedItem.motivo"
+                        label="Motivo"
+                        outlined
+                        required
+                        :counter="150"
+                        :rules="modeloRulesMotivo"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-menu
+                        ref="menuEntrada"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="290px"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="editedItem.dataEntrada"
+                            label="Data de Entrada"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                            required
+                            :counter="10"
+                            :rules="modeloRulesData"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker v-model="editedItem.dataEntrada" no-title scrollable>
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="menuEntrada = false">Cancelar</v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.menuEntrada.save(dataEntrada)"
+                          >OK</v-btn>
+                        </v-date-picker>
+                      </v-menu>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
+                <v-btn :disabled="!valid" color="blue darken-1" text @click="save">Salvar</v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card>
+        </v-dialog>
+        <v-dialog v-model="dialogExcluir" max-width="430px">
+          <v-card>
+            <v-card-title class="headline">Deseja mesmo remover este Item?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Salvar</v-btn>
+              <v-btn color="blue darken-1" text @click="closeExcluir">Cancelar</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemComfirm">Sim</v-btn>
+              <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -109,112 +117,140 @@
 </template>
 
 <script>
+import GarantiaService from "../service/domain/GarantiaService";
+const service = GarantiaService.build();
+
+import OrdemDeServicoService from "../service/domain/OrdemDeServicoService";
+const serviceOrdem = OrdemDeServicoService.build();
+
+import StatusGarantiaService from "../service/domain/StatusGarantiaService";
+const serviceStatusGarantia = StatusGarantiaService.build();
+
+const textos = {
+  novo: "Nova Garantia",
+  edicao: "Edição de Garantia",
+  exclusao: "Deseja mesmo remover esta Garantia?",
+};
+
 export default {
+  name: "lGarantia",
+  components: {},
+
   data: () => ({
     dialog: false,
+    dialogExcluir: false,
+    valid: true,
+    modeloRulesOrdem: [(v) => !!v || "Seleção Necessária"],
+    modeloRulesStatus: [(v) => !!v || "Seleção Necessária"],
+    modeloRulesMotivo: [
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 150 && v.length >= 5) ||
+        "O campo deve ter pelo menos 5 e no maximo 150 letras",
+    ],
+    modeloRulesData: [
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 10 && v.length >= 10) ||
+        "O campo deve ter pelo menos 10 e no maximo 10 letras",
+    ],
     headers: [
       { text: "ID", value: "id" },
-      { text: "Item Serviço", align: "start", value: "itemservico" },
-      { text: "Status", align: "start", value: "status" },
-      { text: "Data de Entrada", align: "start", value: "dataEntrada" },
-      { text: "Data de Saida", align: "start", value: "dataSaida" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Ordem De Serviço", value: "ordemDeServico.id" },
+      { text: "Motivo", value: "motivo" },
+      { text: "Data de Entrada", value: "dataEntrada" },
+      { text: "Status", value: "statusGarantia.descricao" },
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
-    garantias: [],
-    status: [],
+    lGarantia: [],
+    lOrdem: [],
+    lStatus: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1
-        ? "Cadastrar Garantia:"
-        : "Editar Garantia:";
-    }
+      return this.editedIndex === -1 ? textos.novo : textos.edicao;
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
-    this.initialize();
+    this.fetchRecords();
+    this.fetchRecordsOrdem();
+    this.fetchRecordsStatus();
   },
 
   methods: {
-    initialize() {
-      (this.status = [
-        {
-          id: 1,
-          nome: "Aguardando"
-        },
-        {
-          id: 2,
-          nome: "Em Análise"
-        },
-        {
-          id: 3,
-          nome: "Finalizado"
-        },
-        {
-          id: 4,
-          nome: "Aguardando Aprovação"
-        },
-        {
-          id: 5,
-          nome: "Recusado"
-        }
-      ]),
-        (this.garantias = [
-          {
-            id: 1,
-            itemservico: "456789",
-            motivo: "Sem Carga",
-            status: "Finalizado",
-            dataEntrada: "2020-06-01",
-            dataSaida: "2020-06-02"
-          },
-          {
-            id: 2,
-            itemservico: "987456",
-            motivo: "Tela Descolada",
-            status: "Recusado",
-            dataEntrada: "2020-05-15",
-            dataSaida: "2020-06-02"
-          },
-          {
-            id: 3,
-            itemservico: "445577",
-            motivo: "Não Liga",
-            status: "Aguardando",
-            dataEntrada: "2020-04-01",
-            dataSaida: ""
-          },
-          {
-            id: 4,
-            itemservico: "456789",
-            motivo: "Travando",
-            status: "Finalizado",
-            dataEntrada: "2020-05-01",
-            dataSaida: "2020-05-02"
-          }
-        ]);
+    fetchRecords() {
+      service.search({}).then(this.fetchRecodsSuccess);
+    },
+
+    fetchRecordsOrdem() {
+      serviceOrdem.search({}).then(this.fetchRecodsSuccessOrdem);
+    },
+
+    fetchRecordsStatus() {
+      serviceStatusGarantia.search({}).then(this.fetchRecodsSuccessStatus);
+    },
+
+    fetchRecodsSuccess(response) {
+      if (Array.isArray(response.rows)) {
+        this.lGarantia = response.rows;
+        return;
+      }
+      this.lGarantia = [];
+    },
+
+    fetchRecodsSuccessOrdem(response) {
+      if (Array.isArray(response.rows)) {
+        this.lOrdem = response.rows;
+        return;
+      }
+      this.lOrdem = [];
+    },
+
+    fetchRecodsSuccessStatus(response) {
+      if (Array.isArray(response.rows)) {
+        this.lStatus = response.rows;
+        return;
+      }
+      this.lStatus = [];
     },
 
     editItem(item) {
-      this.editedIndex = this.garantias.indexOf(item);
+      this.editedIndex = this.lGarantia.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      const index = this.garantias.indexOf(item);
-      confirm("Você tem certeza que deseja apagar este item?") &&
-        this.garantias.splice(index, 1);
+      this.editedIndex = this.lGarantia.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogExcluir = true;
+    },
+
+    deleteItemComfirm() {
+      //const index = this.lGarantia.indexOf(this.editedItem);
+      service
+        .destroy(this.editedItem)
+        .then(this.lGarantia.splice(this.editedIndex, 1));
+      this.closeExcluir();
+    },
+
+    closeExcluir() {
+      this.dialogExcluir = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
 
     close() {
@@ -227,12 +263,19 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.garantias[this.editedIndex], this.editedItem);
+        console.log(this.editedItem);
+        service
+          .update(this.editedItem)
+          .then(
+            Object.assign(this.lGarantia[this.editedIndex], this.editedItem)
+          );
       } else {
-        this.garantias.push(this.editedItem);
+        service
+          .create(this.editedItem)
+          .then((response) => this.lGarantia.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>
