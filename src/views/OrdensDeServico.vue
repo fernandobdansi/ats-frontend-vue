@@ -129,10 +129,6 @@
                         </v-date-picker>
                       </v-menu>
                     </v-col>
-
-                    <v-col cols="12" sm="6" md="3">
-                      <v-text-field v-model="editedItem.valorTotal" label="Valor Total" outlined></v-text-field>
-                    </v-col>
                     <v-col cols="12" sm="6" md="3">
                       <v-select
                         :items="lPagamento"
@@ -143,6 +139,14 @@
                         required
                         :rules="OrdemRulesStatusOrdemTecnicoCliente"
                       ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="3">
+                      <v-text-field
+                        v-model="editedItem.valorTotal"
+                        label="Valor Total"
+                        outlined
+                        disabled
+                      ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
