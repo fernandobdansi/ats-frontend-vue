@@ -73,6 +73,81 @@
                         :rules="modeloRulesDescricao"
                       ></v-text-field>
                     </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-data-table
+                        :headers="headersItens"
+                        :items="lOrdemServicosItem"
+                        class="elevation-1"
+                      >
+                        <template v-slot:top>
+                          <v-toolbar flat>
+                            <v-toolbar-title>Serviços</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                            <v-dialog v-model="dialog2" max-width="800px">
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                  color="primary"
+                                  dark
+                                  class="mb-2"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                >Novo Item</v-btn>
+                              </template>
+                              <v-card>
+                                <v-form ref="form" v-model="valid2">
+                                  <v-card-title>
+                                    <span class="headline">{{ formTitle2 }}</span>
+                                  </v-card-title>
+
+                                  <v-card-text>
+                                    <v-container>
+                                      <v-row>
+                                        <v-col cols="12" sm="6" md="6">
+                                          <v-combobox
+                                            :items="lServico"
+                                            item-text="descricao"
+                                            label="Serviços"
+                                            v-model="editedItem2.servicos"
+                                            outlined
+                                            required
+                                            :rules="OrdemRulesStatusOrdemTecnicoCliente"
+                                          ></v-combobox>
+                                        </v-col>
+                                        <v-col cols="12" sm="6" md="6">
+                                          <v-text-field
+                                            v-model="editedItem2.valor"
+                                            v-mask="{mask:'#######################'}"
+                                            label="Valor"
+                                            prefix="R$"
+                                            outlined
+                                            required
+                                            :rules="OrdemRulesValorItem"
+                                          ></v-text-field>
+                                        </v-col>
+                                      </v-row>
+                                    </v-container>
+                                  </v-card-text>
+                                  <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="blue darken-1" text @click="close2">Cancelar</v-btn>
+                                    <v-btn
+                                      :disabled="!valid2"
+                                      color="blue darken-1"
+                                      text
+                                      @click="save2"
+                                    >Salvar</v-btn>
+                                  </v-card-actions>
+                                </v-form>
+                              </v-card>
+                            </v-dialog>
+                          </v-toolbar>
+                        </template>
+                        <template v-slot:item.actions="{ item }">
+                          <v-icon small @click="deleteItem2(item)">mdi-delete</v-icon>
+                        </template>
+                      </v-data-table>
+                    </v-col>
+
                     <v-col cols="12" sm="6" md="3">
                       <v-menu
                         ref="menuEntrada"
@@ -144,6 +219,7 @@
                       <v-text-field
                         v-model="editedItem.valorTotal"
                         label="Valor Total"
+                        prefix="R$"
                         outlined
                         disabled
                       ></v-text-field>
@@ -193,33 +269,51 @@ const sDispositivo = DispositivoService.build();
 import TecnicoService from "../service/domain/TecnicoService";
 const sTecnico = TecnicoService.build();
 
+import ServicoService from "../service/domain/ServicoService";
+const sServico = ServicoService.build();
+
 import StatusOrdemService from "../service/domain/StatusOrdemService";
 const sStatusOrdem = StatusOrdemService.build();
 
 import ClienteService from "../service/domain/ClienteService";
 const sCliente = ClienteService.build();
 
+import { mask } from "@titou10/v-mask";
+
 const textos = {
   novo: "Nova Ordem",
   edicao: "Edição de Ordem",
+  novo2: "Novo Servico",
+  edicao2: "Edição de Servico",
   exclusao: "Deseja mesmo remover esta Ordem?",
 };
 
 export default {
   name: "lOrdem",
   components: {},
+  directives: { mask },
 
   data: () => ({
     dialog: false,
+    dialog2: false,
     dialogExcluir: false,
+    totalvalor: 0,
 
     valid: true,
+    valid2: true,
     OrdemRulesStatusOrdemTecnicoCliente: [(v) => !!v || "Seleção Necessária"],
     OrdemRulesNumSerie: [
       (v) => !!v || "Preenchimento Necessário",
       (v) =>
         (v && v.length <= 9 && v.length >= 5) ||
         "O campo deve ter pelo menos 5 e no maximo 9 letras",
+    ],
+
+    OrdemRulesValorItem: [
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 100 && v.length >= 2) ||
+        "O campo deve ter pelo menos 2 e no maximo 100 Digitos",
     ],
     OrdemRulesDescricao: [
       (v) => !!v || "Preenchimento Necessário",
@@ -250,23 +344,38 @@ export default {
       { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
 
+    headersItens: [
+      { text: "Descrição", value: "servicos.descricao" },
+      { text: "Valor", value: "valor" },
+      { text: "Ações", align: "end", value: "actions", sortable: false },
+    ],
+
     lDispositivo: [],
     lOrdem: [],
     lCliente: [],
+    lServico: [],
     lTecnico: [],
     lStatusOrdem: [],
     lPagamento: [],
+    lOrdemServicosItem: [],
 
     clienteSelecionado: null,
 
     editedIndex: -1,
     editedItem: {},
     defaultItem: {},
+
+    editedIndex2: -1,
+    editedItem2: {},
+    defaultItem2: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
+    },
+    formTitle2() {
+      return this.editedIndex2 === -1 ? textos.novo2 : textos.edicao2;
     },
   },
 
@@ -286,6 +395,7 @@ export default {
       this.fetchRecordsStatusOrdem();
       this.fetchRecordsCliente();
       this.fetchRecordsTecnico();
+      this.fetchRecordsServico();
       this.lPagamento = [
         {
           pagamento: "Sim",
@@ -310,6 +420,10 @@ export default {
 
     fetchRecordsTecnico() {
       sTecnico.search({}).then(this.fetchRecodsSuccessTecnico);
+    },
+
+    fetchRecordsServico() {
+      sServico.search({}).then(this.fetchRecodsSuccessServico);
     },
 
     fetchRecordsCliente() {
@@ -348,6 +462,14 @@ export default {
       this.lTecnico = [];
     },
 
+    fetchRecodsSuccessServico(response) {
+      if (Array.isArray(response.rows)) {
+        this.lServico = response.rows;
+        return;
+      }
+      this.lServico = [];
+    },
+
     fetchRecodsSuccessCliente(response) {
       if (Array.isArray(response.rows)) {
         this.lCliente = response.rows;
@@ -375,6 +497,7 @@ export default {
       this.editedIndex = this.lOrdem.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.clienteSelecionado = null;
+      this.lOrdemServicosItem = this.editedItem.ordemServicosItem;
 
       Object.entries(this.editedItem).forEach(([key, value]) => {
         if (key === "dispositivo") {
@@ -389,6 +512,17 @@ export default {
       this.editedIndex = this.lOrdem.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogExcluir = true;
+    },
+
+    deleteItem2(item) {
+      const index = this.lOrdemServicosItem.indexOf(item);
+      this.lOrdemServicosItem.splice(index, 1);
+      this.totalvalor = 0;
+      this.lOrdemServicosItem.forEach((element) => {
+        this.totalvalor =
+          parseFloat(this.totalvalor) + parseFloat(element.valor);
+      });
+      this.editedItem.valorTotal = this.totalvalor;
     },
 
     deleteItemComfirm() {
@@ -412,7 +546,34 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.lOrdemServicosItem = [];
       });
+    },
+
+    close2() {
+      this.dialog2 = false;
+      this.$nextTick(() => {
+        this.editedItem2 = Object.assign({}, this.defaultItem2);
+        this.editedIndex2 = -1;
+      });
+    },
+
+    save2() {
+      if (this.editedIndex2 > -1) {
+        Object.assign(
+          this.lOrdemServicosItem[this.editedIndex2],
+          this.editedItem2
+        );
+      } else {
+        this.lOrdemServicosItem.push(this.editedItem2);
+      }
+      this.totalvalor = 0;
+      this.lOrdemServicosItem.forEach((element) => {
+        this.totalvalor =
+          parseFloat(this.totalvalor) + parseFloat(element.valor);
+      });
+      this.editedItem.valorTotal = this.totalvalor;
+      this.close2();
     },
 
     save() {
@@ -422,6 +583,7 @@ export default {
           .update(this.editedItem)
           .then(Object.assign(this.lOrdem[this.editedIndex], this.editedItem));
       } else {
+        this.editedItem.ordemServicosItem = this.lOrdemServicosItem;
         sOrdem
           .create(this.editedItem)
           .then((response) => this.lOrdem.push(response));
