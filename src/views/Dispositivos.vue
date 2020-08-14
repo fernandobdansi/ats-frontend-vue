@@ -122,7 +122,7 @@ const sCliente = ClienteService.build();
 const textos = {
   novo: "Novo Dispositivo",
   edicao: "Edição de Dispositivo",
-  exclusao: "Deseja mesmo remover este Dispositivo?"
+  exclusao: "Deseja mesmo remover este Dispositivo?",
 };
 
 export default {
@@ -134,18 +134,18 @@ export default {
     dialogExcluir: false,
 
     valid: true,
-    dispositivoRulesMarcaModeloCliente: [v => !!v || "Seleção Necessária"],
+    dispositivoRulesMarcaModeloCliente: [(v) => !!v || "Seleção Necessária"],
     dispositivoRulesNumSerie: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 9 && v.length >= 5) ||
-        "O campo deve ter pelo menos 5 e no maximo 9 letras"
+        "O campo deve ter pelo menos 5 e no maximo 9 letras",
     ],
     dispositivoRulesDescricao: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 150 && v.length >= 5) ||
-        "O campo deve ter pelo menos 5 e no maximo 150 letras"
+        "O campo deve ter pelo menos 5 e no maximo 150 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
@@ -154,7 +154,7 @@ export default {
       { text: "Num Serie", value: "numSerie" },
       { text: "Descrição", value: "descricao" },
       { text: "Cliente", value: "cliente.nome" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
 
     lDispositivo: [],
@@ -166,19 +166,19 @@ export default {
 
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -277,7 +277,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.lDispositivo.indexOf(this.editedItem);
-      sDispositivo.destroy(this.editedItem).then(this.lDispositivo.splice(this.editedIndex, 1));
+      sDispositivo
+        .destroy(this.editedItem)
+        .then(this.lDispositivo.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -308,10 +310,10 @@ export default {
       } else {
         sDispositivo
           .create(this.editedItem)
-          .then(response => this.lDispositivo.push(response));
+          .then((response) => this.lDispositivo.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

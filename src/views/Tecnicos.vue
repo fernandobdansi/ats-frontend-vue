@@ -122,7 +122,7 @@ const service = TecnicoService.build();
 const textos = {
   novo: "Novo Tecnico",
   edicao: "Edição de Tecnico",
-  exclusao: "Deseja mesmo remover este Tecnico?"
+  exclusao: "Deseja mesmo remover este Tecnico?",
 };
 
 export default {
@@ -132,30 +132,32 @@ export default {
 
   data: () => ({
     dialog: false,
-        dialogExcluir: false,
+    dialogExcluir: false,
 
     valid: true,
     tecnicoRulesNomeEndereco: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 200 && v.length >= 10) ||
-        "O campo deve ter pelo menos 10 e no maximo 200 letras"
+        "O campo deve ter pelo menos 10 e no maximo 200 letras",
     ],
     tecnicoRulesCpf: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
-        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 11 digitos"
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 14 && v.length >= 14) ||
+        "O campo deve ter 11 digitos",
     ],
     tecnicoRulesTelefone: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
-        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 10 digitos"
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 14 && v.length >= 14) ||
+        "O campo deve ter 10 digitos",
     ],
     tecnicoRulesLoginSenha: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 50 && v.length >= 5) ||
-        "O campo deve ter pelo menos 5 e no maximo 50 letras"
+        "O campo deve ter pelo menos 5 e no maximo 50 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
@@ -163,24 +165,24 @@ export default {
       { text: "CPF", value: "cpf" },
       { text: "Telefone", value: "telefone" },
       { text: "Endereço", value: "endereco" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     ltecnico: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -214,7 +216,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.ltecnico.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.ltecnico.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.ltecnico.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -245,10 +249,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.ltecnico.push(response));
+          .then((response) => this.ltecnico.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

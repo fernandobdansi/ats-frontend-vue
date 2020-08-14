@@ -101,7 +101,7 @@ const service = ClienteService.build();
 const textos = {
   novo: "Novo Cliente",
   edicao: "Edição de Cliente",
-  exclusao: "Deseja mesmo remover este Cliente?"
+  exclusao: "Deseja mesmo remover este Cliente?",
 };
 
 export default {
@@ -115,20 +115,22 @@ export default {
 
     valid: true,
     clienteRulesNomeEndereco: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 200 && v.length >= 10) ||
-        "O campo deve ter pelo menos 10 e no maximo 200 letras"
+        "O campo deve ter pelo menos 10 e no maximo 200 letras",
     ],
     clienteRulesCpf: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
-        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 11 digitos"
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 14 && v.length >= 14) ||
+        "O campo deve ter 11 digitos",
     ],
     clienteRulesTelefone: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
-        (v && v.length <= 14 && v.length >= 14) || "O campo deve ter 10 digitos"
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 14 && v.length >= 14) ||
+        "O campo deve ter 10 digitos",
     ],
     headers: [
       { text: "ID", value: "id" },
@@ -136,24 +138,24 @@ export default {
       { text: "CPF", value: "cpf" },
       { text: "Telefone", value: "telefone" },
       { text: "Endereço", value: "endereco" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     lCliente: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -187,7 +189,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.lCliente.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.lCliente.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.lCliente.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -218,10 +222,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.lCliente.push(response));
+          .then((response) => this.lCliente.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

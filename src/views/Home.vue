@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <BemVindoComp/>
+    <BemVindoComp />
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import BemVindoComp from "@/components/BemVindoComp.vue";
 export default {
   name: "Home",
   components: {
-    BemVindoComp
-  }
+    BemVindoComp,
+  },
 };
 </script>

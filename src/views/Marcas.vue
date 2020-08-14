@@ -67,7 +67,7 @@ const service = MarcaService.build();
 const textos = {
   novo: "Nova Marca",
   edicao: "Edição de Marca",
-  exclusao: "Deseja mesmo remover esta Marca?"
+  exclusao: "Deseja mesmo remover esta Marca?",
 };
 
 export default {
@@ -80,32 +80,32 @@ export default {
 
     valid: true,
     marcaRules: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 20 && v.length >= 2) ||
-        "O campo deve ter pelo menos 2 e no maximo 20 letras"
+        "O campo deve ter pelo menos 2 e no maximo 20 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Nome", value: "nomeMarca" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     lMarca: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -139,7 +139,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.lMarca.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.lMarca.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.lMarca.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -168,10 +170,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.lMarca.push(response));
+          .then((response) => this.lMarca.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

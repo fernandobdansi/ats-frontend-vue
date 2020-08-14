@@ -83,7 +83,7 @@ const serviceMarca = MarcaService.build();
 const textos = {
   novo: "Novo Modelo",
   edicao: "Edição de Modelo",
-  exclusao: "Deseja mesmo remover este Modelo?"
+  exclusao: "Deseja mesmo remover este Modelo?",
 };
 
 export default {
@@ -94,36 +94,36 @@ export default {
     dialog: false,
     dialogExcluir: false,
     valid: true,
-    modeloRulesMarca: [v => !!v || "Seleção Necessária"],
+    modeloRulesMarca: [(v) => !!v || "Seleção Necessária"],
     modeloRulesNome: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 20 && v.length >= 3) ||
-        "O campo deve ter pelo menos 3 e no maximo 20 letras"
+        "O campo deve ter pelo menos 3 e no maximo 20 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Nome", value: "nomeModelo" },
       { text: "Marca", value: "marca.nomeMarca" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     lModelo: [],
     lMarca: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -170,7 +170,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.lModelo.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.lModelo.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.lModelo.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -199,10 +201,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.lModelo.push(response));
+          .then((response) => this.lModelo.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

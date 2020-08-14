@@ -70,7 +70,7 @@ const service = ServicoService.build();
 const textos = {
   novo: "Novo Serviço",
   edicao: "Edição de Serviço",
-  exclusao: "Deseja mesmo remover este Serviço?"
+  exclusao: "Deseja mesmo remover este Serviço?",
 };
 
 export default {
@@ -82,32 +82,32 @@ export default {
     dialogExcluir: false,
     valid: true,
     servicosRules: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 100 && v.length >= 10) ||
-        "O campo deve ter pelo menos 10 e no maximo 100 letras"
+        "O campo deve ter pelo menos 10 e no maximo 100 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Descrição", value: "descricao" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     servicos: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -141,7 +141,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.servicos.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.servicos.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.servicos.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -172,10 +174,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.servicos.push(response));
+          .then((response) => this.servicos.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

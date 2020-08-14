@@ -67,7 +67,7 @@ const service = StatusGarantiaService.build();
 const textos = {
   novo: "Novo Status de Garantia",
   edicao: "Edição de Status de Garantia",
-  exclusao: "Deseja mesmo remover este Status de Garantia?"
+  exclusao: "Deseja mesmo remover este Status de Garantia?",
 };
 
 export default {
@@ -80,32 +80,32 @@ export default {
 
     valid: true,
     statusRules: [
-      v => !!v || "Preenchimento Necessário",
-      v =>
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
         (v && v.length <= 100 && v.length >= 5) ||
-        "O campo deve ter pelo menos 5 e no maximo 100 letras"
+        "O campo deve ter pelo menos 5 e no maximo 100 letras",
     ],
     headers: [
       { text: "ID", value: "id" },
       { text: "Descrição", value: "descricao" },
-      { text: "Ações", align: "end", value: "actions", sortable: false }
+      { text: "Ações", align: "end", value: "actions", sortable: false },
     ],
     stgarantia: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? textos.novo : textos.edicao;
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -139,7 +139,9 @@ export default {
 
     deleteItemComfirm() {
       //const index = this.servicos.indexOf(this.editedItem);
-      service.destroy(this.editedItem).then(this.stgarantia.splice(this.editedIndex, 1));
+      service
+        .destroy(this.editedItem)
+        .then(this.stgarantia.splice(this.editedIndex, 1));
       this.closeExcluir();
     },
 
@@ -170,10 +172,10 @@ export default {
       } else {
         service
           .create(this.editedItem)
-          .then(response => this.stgarantia.push(response));
+          .then((response) => this.stgarantia.push(response));
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>

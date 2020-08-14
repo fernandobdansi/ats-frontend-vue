@@ -80,7 +80,7 @@ import TabelaOrdemServicoItem from "@/components/TabelaOrdemServicoItem.vue";
 
 export default {
   components: {
-    TabelaOrdemServicoItem
+    TabelaOrdemServicoItem,
   },
   data: () => ({
     dialog: false,
@@ -90,7 +90,7 @@ export default {
       { text: "Dispositivo", align: "start", value: "dispositivo" },
       { text: "Tecnico", value: "tecnico" },
       { text: "Valor Total", value: "valorTotal" },
-      { text: "Ações", value: "actions", sortable: false }
+      { text: "Ações", value: "actions", sortable: false },
     ],
     orcamentos: [],
     tecnicos: [],
@@ -98,7 +98,7 @@ export default {
     clientes: [],
     editedIndex: -1,
     editedItem: {},
-    defaultItem: {}
+    defaultItem: {},
   }),
 
   computed: {
@@ -106,13 +106,13 @@ export default {
       return this.editedIndex === -1
         ? "Cadastrar Orçamento:"
         : "Editar Orçamento:";
-    }
+    },
   },
 
   watch: {
     dialog(val) {
       val || this.close();
-    }
+    },
   },
 
   created() {
@@ -128,7 +128,7 @@ export default {
           tecnico: "José Da Costa",
           valorTotal: "150",
           descricao: "Azul",
-          cliente: "José da Silva"
+          cliente: "José da Silva",
         },
         {
           id: 2,
@@ -136,7 +136,7 @@ export default {
           tecnico: "José Da Costa",
           valorTotal: "200",
           descricao: "Verde",
-          cliente: "Francisco Roberto"
+          cliente: "Francisco Roberto",
         },
         {
           id: 3,
@@ -144,7 +144,7 @@ export default {
           tecnico: "José Da Costa",
           valorTotal: "300",
           descricao: "Cinza",
-          cliente: "Roberto Miranda"
+          cliente: "Roberto Miranda",
         },
         {
           id: 4,
@@ -152,86 +152,86 @@ export default {
           tecnico: "José Da Costa",
           valorTotal: "500",
           descricao: "Branco",
-          cliente: "Maria Lucia"
-        }
+          cliente: "Maria Lucia",
+        },
       ]),
         (this.dispositivos = [
           {
             id: 1,
-            dispositivo: "4567894"
+            dispositivo: "4567894",
           },
           {
             id: 2,
-            dispositivo: "566447"
+            dispositivo: "566447",
           },
           {
             id: 3,
-            dispositivo: "6549879"
+            dispositivo: "6549879",
           },
           {
             id: 4,
-            dispositivo: "22123154"
+            dispositivo: "22123154",
           },
           {
             id: 5,
-            dispositivo: "55648754"
+            dispositivo: "55648754",
           },
           {
             id: 6,
-            dispositivo: "23164978"
-          }
+            dispositivo: "23164978",
+          },
         ]),
         (this.tecnicos = [
           {
             id: 1,
-            tecnico: "José Da Costa"
+            tecnico: "José Da Costa",
           },
           {
             id: 2,
-            tecnico: "Matter Zomms"
+            tecnico: "Matter Zomms",
           },
           {
             id: 3,
-            tecnico: "Piter Jack"
+            tecnico: "Piter Jack",
           },
           {
             id: 4,
-            tecnico: "Steve Dogrs"
+            tecnico: "Steve Dogrs",
           },
           {
             id: 5,
-            tecnico: "Alberts Lindebeerg"
+            tecnico: "Alberts Lindebeerg",
           },
           {
             id: 6,
-            tecnico: "Jotesr Huberts"
-          }
+            tecnico: "Jotesr Huberts",
+          },
         ]),
         (this.clientes = [
           {
             id: 1,
-            nome: "José da Silva"
+            nome: "José da Silva",
           },
           {
             id: 2,
-            nome: "Francisco Roberto"
+            nome: "Francisco Roberto",
           },
           {
             id: 3,
-            nome: "Roberto Miranda"
+            nome: "Roberto Miranda",
           },
           {
             id: 4,
-            nome: "Maria Lucia"
+            nome: "Maria Lucia",
           },
           {
             id: 5,
-            nome: "Ana Luzia"
+            nome: "Ana Luzia",
           },
           {
             id: 6,
-            nome: "Fernando Bueno"
-          }
+            nome: "Fernando Bueno",
+          },
         ]);
     },
 
@@ -262,7 +262,7 @@ export default {
         this.orcamentos.push(this.editedItem);
       }
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>
