@@ -41,7 +41,7 @@
                       ></v-combobox>
                     </v-col>
 
-                    <v-col cols="12" sm="6" md="3">
+                    <v-col cols="12" sm="6" md="6">
                       <v-combobox
                         :items="lTecnico"
                         item-text="nome"
@@ -52,7 +52,7 @@
                         :rules="OrdemRulesStatusOrdemTecnicoCliente"
                       ></v-combobox>
                     </v-col>
-                    <v-col cols="12" sm="6" md="3">
+                    <v-col cols="12" sm="6" md="6">
                       <v-combobox
                         :items="lStatusOrdem"
                         item-text="descricao"
@@ -62,6 +62,16 @@
                         required
                         :rules="OrdemRulesStatusOrdemTecnicoCliente"
                       ></v-combobox>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="12">
+                      <v-text-field
+                        v-model="editedItem.descricaoProblema"
+                        label="Descrição"
+                        outlined
+                        required
+                        :counter="150"
+                        :rules="modeloRulesDescricao"
+                      ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="6" md="3">
                       <v-menu
@@ -79,6 +89,8 @@
                             v-bind="attrs"
                             v-on="on"
                             outlined
+                            required
+                            :rules="modeloRulesData"
                           ></v-text-field>
                         </template>
                         <v-date-picker v-model="editedItem.dataEntrada" no-title scrollable>
@@ -117,17 +129,11 @@
                         </v-date-picker>
                       </v-menu>
                     </v-col>
-                    <v-col cols="12" sm="6" md="3">
-                      <v-text-field
-                        v-model="editedItem.descricaoProblema"
-                        label="Descrição"
-                        outlined
-                      ></v-text-field>
-                    </v-col>
+
                     <v-col cols="12" sm="6" md="3">
                       <v-text-field v-model="editedItem.valorTotal" label="Valor Total" outlined></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col cols="12" sm="6" md="3">
                       <v-select
                         :items="lPagamento"
                         item-text="pagamento"
@@ -217,9 +223,21 @@ export default {
         (v && v.length <= 150 && v.length >= 5) ||
         "O campo deve ter pelo menos 5 e no maximo 150 letras",
     ],
+    modeloRulesData: [
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 10 && v.length >= 10) ||
+        "O campo deve ter pelo menos 10 e no maximo 10 letras",
+    ],
+    modeloRulesDescricao: [
+      (v) => !!v || "Preenchimento Necessário",
+      (v) =>
+        (v && v.length <= 150 && v.length >= 10) ||
+        "O campo deve ter pelo menos 10 e no maximo 150 letras",
+    ],
     headers: [
       { text: "ID", value: "id" },
-      { text: "Cliente", value: "cliente.nome" },
+      { text: "Cliente", value: "dispositivo.cliente.nome" },
       { text: "Dispositivo", value: "dispositivo.numSerie" },
       { text: "Tecnico", value: "tecnico.nome" },
       { text: "Status", value: "statusOrdemDeServico.descricao" },
