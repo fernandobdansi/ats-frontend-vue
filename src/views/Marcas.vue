@@ -106,6 +106,9 @@ export default {
     dialog(val) {
       val || this.close();
     },
+    dialogExcluir(val) {
+      val || this.closeExcluir();
+    },
   },
 
   created() {
