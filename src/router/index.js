@@ -21,6 +21,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "ordensdeservico" */ '../views/OrdensDeServico.vue')
   },
   {
+    path: '/ordensdeservicorelatorio',
+    name: 'Ordens: Relatorio',
+    component: () => import(/* webpackChunkName: "ordensdeservicorelatorio" */ '../views/OrdensDeServicoRelatorio.vue')
+  },
+  {
+    path: '/ordensdeservicorelatoriocomfiltro',
+    name: 'Ordens: Relatorio Com Filtro',
+    component: () => import(/* webpackChunkName: "ordensdeservicorelatoriocomfiltro" */ '../views/OrdensDeServicoRelatorioComFiltro.vue')
+  },
+  {
     path: '/orcamentos',
     name: 'Orçamentos',
     component: () => import(/* webpackChunkName: "orcamentos" */ '../views/Orcamentos.vue')
@@ -31,9 +41,19 @@ const routes = [
     component: () => import(/* webpackChunkName: "feedbacks" */ '../views/FeedBacks.vue')
   },
   {
+    path: '/feedbacksrelatoriocomfiltro',
+    name: 'FeedBacks: Relatorio Com Filtro',
+    component: () => import(/* webpackChunkName: "feedbacksrelatoriocomfiltro" */ '../views/FeedBacksRelatorioComFiltro.vue')
+  },
+  {
     path: '/garantias',
     name: 'Garantias',
     component: () => import(/* webpackChunkName: "garantias" */ '../views/Garantias.vue')
+  },
+  {
+    path: '/garantiasrelatoriocomfiltro',
+    name: 'Garantias: Relatorio Com Filtro',
+    component: () => import(/* webpackChunkName: "garantiasrelatoriocomfiltro" */ '../views/GarantiasRelatorioComFiltro.vue')
   },
   {
     path: '/clientes',
